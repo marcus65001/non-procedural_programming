@@ -12,3 +12,9 @@ q1h(S,[],N,0).
 q1h(S,[H|C],N,T) :- setup(S,H,TM,W), qmark(S,N,H,M), q1h(S,C,N,T1), T is T1+W*(M/TM).
 
 query1(S,N,T):-qcomp(S,C), q1h(S,C,N,T).
+
+mfcomp(S,M,F) :- setup(S,midterm,TM,_), setup(S,final,TF,_), (M/TM)<(F/TF).
+
+q2h(S,N):-qmark(S,N,midterm,MT), qmark(S,N,final,FN), mfcomp(S,MT,FN).
+
+query2(S,L) :- findall(X,q2h(S,X),L).
