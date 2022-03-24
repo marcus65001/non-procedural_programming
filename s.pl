@@ -18,3 +18,15 @@ mfcomp(S,M,F) :- setup(S,midterm,TM,_), setup(S,final,TF,_), (M/TM)<(F/TF).
 q2h(S,N):-qmark(S,N,midterm,MT), qmark(S,N,final,FN), mfcomp(S,MT,FN).
 
 query2(S,L) :- findall(X,q2h(S,X),L).
+
+qexist(S,N) :- c325(S,N,_,_,_,_,_,_).
+
+q3h(S,N,as1,NM) :-      retract(c325(S,N,A1,A2,A3,A4,MT,FN)), assert(c325(S,N,NM,A2,A3,A4,MT,FN)).
+q3h(S,N,as2,NM) :-      retract(c325(S,N,A1,A2,A3,A4,MT,FN)), assert(c325(S,N,A1,NM,A3,A4,MT,FN)).
+q3h(S,N,as3,NM) :-      retract(c325(S,N,A1,A2,A3,A4,MT,FN)), assert(c325(S,N,A1,A2,NM,A4,MT,FN)).
+q3h(S,N,as4,NM) :-      retract(c325(S,N,A1,A2,A3,A4,MT,FN)), assert(c325(S,N,A1,A2,A3,NM,MT,FN)).
+q3h(S,N,midterm,NM) :-  retract(c325(S,N,A1,A2,A3,A4,MT,FN)), assert(c325(S,N,A1,A2,A3,A4,NM,FN)).
+q3h(S,N,final,NM) :-    retract(c325(S,N,A1,A2,A3,A4,MT,FN)), assert(c325(S,N,A1,A2,A3,A4,MT,NM)).
+
+query3(S,N,C,NM) :- \+ qexist(S,N), print('record not found'), !.
+query3(S,N,C,NM) :- q3h(S,N,C,NM).
