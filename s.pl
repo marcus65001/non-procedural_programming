@@ -1,3 +1,4 @@
+% Q1
 qcomp(S,C) :- findall(X,setup(S,X,_,_),C).
 
 qmark(S,N,as1,M) :-     c325(S,N,M,_,_,_,_,_).
@@ -30,3 +31,36 @@ q3h(S,N,final,NM) :-    retract(c325(S,N,A1,A2,A3,A4,MT,FN)), assert(c325(S,N,A1
 
 query3(S,N,C,NM) :- \+ qexist(S,N), print('record not found'), !.
 query3(S,N,C,NM) :- q3h(S,N,C,NM).
+
+% Q2
+% [Written ans.]
+
+
+% Q3
+:- use_module(library(clpfd)).
+
+gendigit2([W],0,[W]).
+gendigit2([W|R],N,[X|O]) :- P is 10**N, X = W*P, NN is N-1, gendigit2(R,NN,O).
+gendigit(W,O) :- length(W,L), LN is L-1, gendigit2(W,LN,O).
+
+gensum2([],T,T).
+gensum2([H|L],T,O) :- gensum2(L,T+H,O).
+gensum(L,O) :- gensum2(L,0,O).
+
+evaleq(X,Y) :- X #= Y.
+
+encrypt(W1,W2,W3) :- 
+    length(W1,N),           % if you need to know the lengths of words
+    length(W3,N1),   
+    append(W1,W2,W),
+    append(W,W3,L),
+    list_to_set(L,Letters),     % remove duplicates, a predicate in the list library
+    [LeadLetter1|_] = W1,   % identify the leading letter to be set to non-zero
+    [LeadLetter2|_] = W2,
+    [LeadLetter3|_] = W3,
+    !,                      % never need to redo the above
+    Letters ins 0..9,
+    all_different(Letters),
+    LeadLetter1 #\= 0,
+    LeadLetter2 #\= 0,
+    LeadLetter3 #\= 0.
