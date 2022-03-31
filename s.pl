@@ -74,3 +74,11 @@ encrypt(W1,W2,W3) :-
 % Q4
 grid(N,1,[O]) :- length(O,N), !.
 grid(N,T,[NL|O]) :- length(NL,N), NT is T-1, grid(N,NT,O).
+
+lind(+L,+E,+I,-O).
+lind([E|L],E,I,I) :- !.
+lind([_|L],E,I,O) :- I2 is I+1, lind(L,E,I2,O).
+
+lind(L,E,O) :- lind(L,E,1,O).
+
+gcol(P,I,T,[H|O]) :- lind(P,TL,T).
