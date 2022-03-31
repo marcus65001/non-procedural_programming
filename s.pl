@@ -47,7 +47,7 @@ gensum2([],T,T).
 gensum2([H|L],T,O) :- gensum2(L,T+H,O).
 gensum(L,O) :- gensum2(L,0,O).
 
-evaleq(X,Y) :- X #= Y.
+genterm(L,O) :- gendigit(L,O1), gensum(O1,O).
 
 encrypt(W1,W2,W3) :- 
     length(W1,N),           % if you need to know the lengths of words
@@ -63,4 +63,14 @@ encrypt(W1,W2,W3) :-
     all_different(Letters),
     LeadLetter1 #\= 0,
     LeadLetter2 #\= 0,
-    LeadLetter3 #\= 0.
+    LeadLetter3 #\= 0,
+    genterm(W1,T1),
+    genterm(W2,T2),
+    genterm(W3,T3),
+    T1 + T2 #= T3,
+    label(Letters).
+
+
+% Q4
+grid(N,1,[O]) :- length(O,N), !.
+grid(N,T,[NL|O]) :- length(NL,N), NT is T-1, grid(N,NT,O).
