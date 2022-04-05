@@ -117,3 +117,63 @@ xall-distinct([A|L]) :-
 xall-distinct([A|L]) :-
     is_list(A),
     xall-distinct(A).
+
+% Q5
+rvcons(I,[],[]):- plist(_,N), I=N.
+rvcons(I,[R1|W1],[R2|W2]) :- 
+    R1#\=R2,  % two reviewers distinct
+
+    % workload
+    occur(R1,W1,L1), 
+    occur(R2,W2,L2),
+    workLoadAtMost(K),
+    L1#=<K,
+    L2#=<K,
+
+    % subject area and no self-review
+    paper(I,C1N,C2N,SA),
+    rvquery(SA,SETR),
+    R1 in_set SETR,
+    R2 in_set SETR,
+    rvassoc(C1N,C1),
+    rvassoc(C2N,C2),
+    R1 #\= C1,
+    R1 #\= C2,
+    R2 #\= C1,
+    R2 #\= C2,
+
+    IX#=I-1,
+    rvcons(IX,W1,W2).
+
+occur(I,Vars,N) :-
+    generate_list(I,Vars,L),
+    sum(L,#=,N).
+
+generate_list(_,[],[]).
+generate_list(I,[A|R],[T|S]) :-
+    (I #= A #==> T#=1),
+    (I #\= A #==> T#=0),
+       generate_list(I,R,S).
+
+rvlist(L,N):-findall(X,reviewer(X,_,_),L), length(L,N).
+rvquery(Q,L):-
+    findall(X,reviewer(X,Q,_),L1),
+    findall(X,reviewer(X,_,Q),L2), 
+    append(L1,L2,LT), 
+    rvassocall(LT,LT2),
+    list_to_fdset(LT2,L).
+rvassocall([],[]).
+rvassocall([LH|L],[IH|I]):-rvassoc(LH,IH), rvassocall(L,I).
+rvassoc(N,I):-rvlist(L,_), lind(L,N,I).
+
+plist(L,N):- findall(X,paper(X,_,_,_),L), length(L,N).
+
+assign(W1,W2):-
+    plist(LP,NP),
+    rvlist(LR,NR),
+    length(W1,NP),
+    length(W2,NP),
+    append(W1,W2,WA),
+    WA ins 1..NR,
+    rvcons(1,W1,W2),
+    label(WA).
