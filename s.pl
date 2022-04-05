@@ -33,7 +33,21 @@ query3(S,N,C,NM) :- \+ qexist(S,N), print('record not found'), !.
 query3(S,N,C,NM) :- q3h(S,N,C,NM).
 
 % Q2
-% [Written ans.]
+% Examples of removal of domain values in Example 1:
+% 1.
+%   The domain for grid (1,1) is initially {0,4,5}.
+%   
+% 2.
+%   The domain for grid (3,1) is initially {0,2,5}.
+%
+% 3.
+%   The domain for grid (1,4) is initially {0,4,9}.
+%
+% 4.
+%   The domain for grid (2,5) is initially {0,4,7}.
+%
+% 5.
+%   The domain for grid (1,6) is initially {0,1,4,7}.
 
 
 % Q3
@@ -74,6 +88,7 @@ encrypt(W1,W2,W3) :-
 % Q4
 grid(N,1,[O]) :- length(O,N), !.
 grid(N,T,[NL|O]) :- length(NL,N), NT is T-1, grid(N,NT,O).
+grid(N,O):-grid(N,N,O).
 
 lind(+L,+E,+I,-O).
 lind([E|L],E,I,I) :- !.
@@ -81,4 +96,24 @@ lind([_|L],E,I,O) :- I2 is I+1, lind(L,E,I2,O).
 
 lind(L,E,O) :- lind(L,E,1,O).
 
-gcol(P,I,T,[H|O]) :- lind(P,TL,T).
+gcol([],I,[]).
+gcol([R|P],I,[H|O]) :- lind(R,H,I), gcol(P,I,O).
+
+xtranspose(P,I,[]):- length(P,L), IX is L+1, I = IX.
+xtranspose(P,I,[C|O]):-gcol(P,I,C), IX is I+1, xtranspose(P,IX,O).
+xtranspose(P,O):-xtranspose(P,1,O).
+
+differ(_,[]).
+differ(A,[B|L]) :-
+    A #\= B,
+    differ(A,L).
+
+xall-distinct([]).
+xall-distinct([A]):- \+ is_list(A).
+xall-distinct([A|L]) :-
+    \+ is_list(A),
+    differ(A,L),
+    xall-distinct(L).
+xall-distinct([A|L]) :-
+    is_list(A),
+    xall-distinct(A).
