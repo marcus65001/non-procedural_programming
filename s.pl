@@ -119,7 +119,7 @@ xall-distinct([A|L]) :-
     xall-distinct(A).
 
 % Q5
-rvcons(I,[],[]):- plist(_,N), I=N.
+rvcons(I,[],[]):- plist(_,N), I#=N+1,!.
 rvcons(I,[R1|W1],[R2|W2]) :- 
     R1#\=R2,  % two reviewers distinct
 
@@ -142,7 +142,7 @@ rvcons(I,[R1|W1],[R2|W2]) :-
     R2 #\= C1,
     R2 #\= C2,
 
-    IX#=I-1,
+    IX#=I+1,
     rvcons(IX,W1,W2).
 
 occur(I,Vars,N) :-
@@ -156,14 +156,17 @@ generate_list(I,[A|R],[T|S]) :-
        generate_list(I,R,S).
 
 rvlist(L,N):-findall(X,reviewer(X,_,_),L), length(L,N).
+
 rvquery(Q,L):-
     findall(X,reviewer(X,Q,_),L1),
     findall(X,reviewer(X,_,Q),L2), 
     append(L1,L2,LT), 
     rvassocall(LT,LT2),
     list_to_fdset(LT2,L).
+
 rvassocall([],[]).
 rvassocall([LH|L],[IH|I]):-rvassoc(LH,IH), rvassocall(L,I).
+rvassoc(xxx,0).
 rvassoc(N,I):-rvlist(L,_), lind(L,N,I).
 
 plist(L,N):- findall(X,paper(X,_,_,_),L), length(L,N).
@@ -171,9 +174,11 @@ plist(L,N):- findall(X,paper(X,_,_,_),L), length(L,N).
 assign(W1,W2):-
     plist(LP,NP),
     rvlist(LR,NR),
-    length(W1,NP),
-    length(W2,NP),
-    append(W1,W2,WA),
-    WA ins 1..NR,
-    rvcons(1,W1,W2),
-    label(WA).
+    length(WT1,NP),
+    length(WT2,NP),
+    append(WT1,WT2,WT),
+    WT ins 1..NR,
+    rvcons(1,WT1,WT2),
+    label(WT),
+    rvassocall(W1,WT1),
+    rvassocall(W2,WT2).
