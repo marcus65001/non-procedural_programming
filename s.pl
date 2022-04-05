@@ -182,3 +182,4 @@ assign(W1,W2):-
     label(WT),
     rvassocall(W1,WT1),
     rvassocall(W2,WT2).
+
