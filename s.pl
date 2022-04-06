@@ -35,20 +35,52 @@ query3(S,N,C,NM) :- q3h(S,N,C,NM).
 % Q2
 % Examples of removal of domain values in Example 1:
 % 1.
-%   The domain for grid (1,1) is initially {0,4,5}.
+%   The domain for grid (5,3) is initially {9,4}.
+%   But we see in the same row, grid (5,6) has domain: {4}.
+%   So choosing 4 for grid (5,3) would leave grid (5,6) with no eligible number.
+%   Therefore we reduce the domain of grid (5,3) to {9}.
 %   
 % 2.
-%   The domain for grid (3,1) is initially {0,2,5}.
+%   The domain for grid (1,6) is initially {1,4,7}.
+%   But we see in the same column, grid (5,6) has domain: {4}.
+%   So choosing 4 for grid (1,6) would leave grid (5,6) with no eligible number.
+%   Therefore we reduce the domain of grid (1,6) to {1,7}.
 %
 % 3.
-%   The domain for grid (1,4) is initially {0,4,9}.
+%   The domain for grid (5,8) is initially {1,3,4,5,6}.
+%   But we see in the same row, grid (5,6) has domain: {4}.
+%   So choosing 4 for grid (5,8) would leave grid (5,6) with no eligible number.
+%   Therefore we reduce the domain of grid (5,8) to {1,3,5,6}.
 %
 % 4.
-%   The domain for grid (2,5) is initially {0,4,7}.
+%   The domain for grid (9,6) is initially {4,7}.
+%   But we see in the same column, grid (5,6) has domain: {4}.
+%   So choosing 4 for grid (9,6) would leave grid (5,6) with no eligible number.
+%   Therefore we reduce the domain of grid (9,6) to {7}.
 %
 % 5.
-%   The domain for grid (1,6) is initially {0,1,4,7}.
-
+%   The domain for grid (8,7) is initially {1,7}.
+%   But we see in the same column, grid (5,7) has domain: {1}.
+%   So choosing 1 for grid (8,7) would leave grid (5,7) with no eligible number.
+%   Therefore we reduce the domain of grid (8,7) to {7}.
+%
+%
+% Example in Example 2 of domain values that cannot be removed by AC-3:
+% For grid (1,1), its domain is {9,4}.
+%
+% The domains of other grids in the same row:
+% {8, 4, 5, 6}, {8, 9, 4, 6}, {3, 4, 6}, {8, 3, 4, 6}, {8, 4, 5}
+% So no matter which value grid (1,1) chose, it wouldn't make any of the grid in the same row impossible.
+%
+% The domains of other grids in the same column:
+% {2, 4}, {9, 4}, {1, 4}, {1, 2, 3, 4, 9}
+% Again, no matter which value grid (1,1) chose, it wouldn't make any of the grid in the same column impossible.
+%
+% The domains of other grids in the same box:
+% {8, 4, 5, 6}, {8, 9, 4, 6}, {2, 4}, {2, 4, 6, 7, 8}, {9, 4}, {4, 5, 6, 7, 8}
+% No matter which value grid (1,1) chose, it wouldn't make any of the grid in the same box impossible.
+%
+% Therefore we could not reduce the domain by applying AC-3 for grid (1,1).
 
 % Q3
 :- use_module(library(clpfd)).
