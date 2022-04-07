@@ -165,8 +165,12 @@ rvcons(I,[R1|W1],[R2|W2]) :-
     % subject area and no self-review
     paper(I,C1N,C2N,SA),
     rvquery(SA,SETR),
-    R1 in_set SETR,
-    R2 in_set SETR,
+    % initially used "in_set" operator in CLPFD (swipl 8.x), but lab machines are using a older version of swipl (7.6.4).
+    % if direct access into the library is not allowed, please kindly replace the two lines with the following lines.
+    % R1 in_set SETR,
+    % R2 in_set SETR,
+    clpfd:domain(R1,SETR),
+    clpfd:domain(R2,SETR),
     rvassoc(C1N,C1),
     rvassoc(C2N,C2),
     R1 #\= C1,
@@ -189,12 +193,18 @@ generate_list(I,[A|R],[T|S]) :-
 
 rvlist(L,N):-findall(X,reviewer(X,_,_),L), length(L,N).
 
+
+
 rvquery(Q,L):-
     findall(X,reviewer(X,Q,_),L1),
     findall(X,reviewer(X,_,Q),L2), 
     append(L1,L2,LT), 
     rvassocall(LT,LT2),
-    list_to_fdset(LT2,L).
+    list_to_set(LT2,LT3),
+    % initially used "list_to_fdset" in CLPFD (swipl 8.x), but lab machines are using a older version of swipl (7.6.4).
+    % if direct access into the library is not allowed, please kindly replace the last line with the following line.
+    % list_to_fdset(LT3,L).
+    clpfd:list_to_domain(LT3,L).
 
 rvassocall([],[]).
 rvassocall([LH|L],[IH|I]):-rvassoc(LH,IH), rvassocall(L,I).

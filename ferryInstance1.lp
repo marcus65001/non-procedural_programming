@@ -1,4 +1,8 @@
-#const steps=15.
+% CPU:      AMD Ryzen 5 3600 6-Core Processor 3.60 GHz
+% Memory:   32 GB
+% Execution Time: 3.474s
+
+#const steps=16.
 
 car(car1).
 car(car2).
